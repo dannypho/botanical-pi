@@ -1,10 +1,10 @@
 # Botanical Pi
 
 A multithreaded program running on a Raspberry Pi 4 that:
-- Hosts a backend using **Flask**
+- Hosts a backend using Flask
 - Continuously reads data from sensors (soil moisture, light level, water tank level, temperature/humidity)
 - Automates plant care by activating a water pump and grow lights when needed
-- Provides a **web interface** for users to monitor plant conditions and control the system remotely
+- Provides a web interface for users to monitor plant conditions and control the system remotely
 
 This project was developed as part of the **UTA Senior Design course (CSE 4316 & 4317)**.
 
