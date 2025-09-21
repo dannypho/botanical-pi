@@ -24,3 +24,11 @@ This project was developed as part of the **UTA Senior Design course (CSE 4316 &
 - **SQLite** (data logging)
 - **HTML/CSS/JS** (frontend)
 
+## Team Members
+| Name                |
+|---------------------|
+| Danny Pho           |
+| Benjamin Circe      | 
+| Oghenerukevwe Onedo | 
+| Edosa Aigbuza       |
+| Eric Prachan        |
