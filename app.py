@@ -17,27 +17,30 @@ sensor_data = {
     "last_updated": None
 }
 
+def read_dht22():
+    try:
+        temperature_c = dhtDevice.temperature
+        temperature_f = temperature_c * (9 / 5) + 32
+        humidity = dhtDevice.humidity
+
+        # Update the shared dictionary
+        sensor_data.update({
+            "temperature_c": round(temperature_c, 1),
+            "temperature_f": round(temperature_f, 1),
+            "humidity": round(humidity, 1),
+            "last_updated": time.strftime("%Y-%m-%d %H:%M:%S")
+        })
+
+    except RuntimeError as error:
+        # Common DHT read errors, just skip
+        print(f"DHT read error: {error}")
+    except Exception as error:
+        dhtDevice.exit()
+        raise error
+
 def read_sensors():
     while True:
-        try:
-            temperature_c = dhtDevice.temperature
-            temperature_f = temperature_c * (9 / 5) + 32
-            humidity = dhtDevice.humidity
-
-            # Update the shared dictionary
-            sensor_data.update({
-                "temperature_c": round(temperature_c, 1),
-                "temperature_f": round(temperature_f, 1),
-                "humidity": round(humidity, 1),
-                "last_updated": time.strftime("%Y-%m-%d %H:%M:%S")
-            })
-
-        except RuntimeError as error:
-            # Common DHT read errors, just skip
-            print(f"DHT read error: {error}")
-        except Exception as error:
-            dhtDevice.exit()
-            raise error
+        read_dht22()
 
 @app.route("/")
 def index():
