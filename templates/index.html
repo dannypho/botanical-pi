@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Plant Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Plant Monitoring Dashboard</h1>
+
+    <div class="sensor">
+        <h3>Environment</h3>
+        <p id="temp">Temp: -- °C / -- °F</p>
+        <p id="humidity">Humidity: -- %</p>
+    </div>
+
+    <div class="sensor">
+        <h3>Soil Moisture</h3>
+        <p id="moisture">ADC: -- / Voltage: -- V</p>
+    </div>
+
+    <div class="sensor">
+        <h3>Light</h3>
+        <p id="light">Lux: --</p>
+    </div>
+
+    <div class="sensor">
+        <h3>Water Level</h3>
+        <p id="water">Detected: --</p>
+    </div>
+
+    <div class="sensor">
+        <h3>Controls</h3>
+        <button onclick="togglePump(true)">Pump ON</button>
+        <button onclick="togglePump(false)">Pump OFF</button>
+        <button onclick="toggleLight(true)">Light ON</button>
+        <button onclick="toggleLight(false)">Light OFF</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

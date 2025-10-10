@@ -9,7 +9,7 @@ import smbus2 as smbus
 import RPi.GPIO as GPIO
 
 class DHT22Sensor:
-    def __init__(self, pin=board.D4):
+    def __init__(self, pin=board.D27):   # GPIO number
         self.sensor = adafruit_dht.DHT22(pin, use_pulseio=False)
 
     def read(self):
@@ -31,29 +31,19 @@ class ADS1115Sensor:
     def __init__(self):
         i2c = busio.I2C(board.SCL, board.SDA)
         self.ads = ADS.ADS1115(i2c)
-        self.water_chan = AnalogIn(self.ads, ADS.P3)
         self.moisture_chan = AnalogIn(self.ads, ADS.P2)
-        self.MIN_ADC = 0
-        self.MAX_ADC = 32767
-
-    def read_water_level(self):
-        adc_val = self.water_chan.value
-        water_level = (adc_val - self.MIN_ADC) / (self.MAX_ADC - self.MIN_ADC) * 100
-        return {
-            "adc": adc_val,
-            "voltage": round(self.water_chan.voltage, 2),
-            "water_level_percent": round(water_level, 1)
-        }
 
     def read_moisture(self):
         adc_val = self.moisture_chan.value
         return {
             "adc": adc_val,
+            # Voltage: 0 - 3.3V
+            # The lower the voltage the drier the soil
             "voltage": round(self.moisture_chan.voltage, 2)
         }
 
 class WaterLevelSensor:
-    def __init__(self, pin=22):
+    def __init__(self, pin=16):         #GPIO number
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(pin, GPIO.IN)
         self.pin = pin
