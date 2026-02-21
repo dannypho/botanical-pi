@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
 # Import database and models
-from models import db, User, Device, SensorReading, Command
+from models import db, User, SensorReading, Command
 
 application = Flask(__name__)
 
