@@ -95,11 +95,19 @@ def main():
         while True:
             # 1. Read all sensors
             sensor_data = read_all_sensors()
-            print(f"[Sensors] Temp: {sensor_data['environment']['temperature_f']}°F | "
+
+            # Skip this cycle if any sensor failed to read
+            if sensor_data['environment'] is None:
+                print("[Sensors] DHT read failed, skipping cycle...")
+                time.sleep(POLL_INTERVAL)
+                continue
+
+            print(f"[Sensors] Temp: {sensor_data['environment']['temperature_c']}°C | "
                   f"Humidity: {sensor_data['environment']['humidity']}% | "
                   f"Moisture: {sensor_data['moisture']['voltage']}V | "
-                  f"Light: {sensor_data['light']['lux']} lux")
-
+                  f"Light: {sensor_data['light']['lux']} lux | "
+                  f"Water Detected: {sensor_data['water']['water_detected']}")
+                
             # 2. Send data to AWS
             send_telemetry(sensor_data)
 

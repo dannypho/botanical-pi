@@ -2,3 +2,4 @@ RPi.GPIO
 adafruit-circuitpython-dht
 adafruit-circuitpython-ads1x15
 smbus2
+requests
