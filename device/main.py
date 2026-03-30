@@ -2,6 +2,8 @@ import time
 import requests
 from sensors import DHT22Sensor, ADS1115Sensor, BH1750Sensor, WaterLevelSensor
 from actuators import RelayController
+from datetime import datetime, timezone
+
 
 # ========== CONFIGURATION ==========
 AWS_BASE_URL = "http://botanical-pi-env.eba-npauivb3.us-east-1.elasticbeanstalk.com"
@@ -61,6 +63,16 @@ def poll_and_execute_commands():
 
         for cmd in commands:
             action = cmd.get("action")
+            created_at = cmd.get("created_at")
+
+            # Skip stale commands older than 30 seconds
+            if created_at:
+                cmd_time = datetime.fromisoformat(created_at).replace(tzinfo=timezone.utc)
+                age = (datetime.now(timezone.utc) - cmd_time).total_seconds()
+                if age > 30:
+                    print(f"[Commands] Skipping stale command: {action} ({int(age)}s old)")
+                    continue
+
             print(f"[Commands] Executing: {action}")
 
             if action == "pump_on":
