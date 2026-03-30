@@ -108,15 +108,17 @@ export function Dashboard({ onLogout }: DashboardProps) {
     ? Math.round(plants.reduce((sum, p) => sum + p.moistureLevel, 0) / plants.length)
     : 0;
 
-  const handleControl = async (action: string) => {
-    try {
-      await controlDevice(action);
-      alert(`Command "${action}" sent!`);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to send command");
-    }
-  };
+const handleControl = async (command: string) => {
+  try {
+    // command will be "plantId:action"
+    //const [plantId, action] = command.split(":");
+    await controlDevice(command);
+    alert(`Command "${command}" sent!`);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to send command");
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -235,10 +237,10 @@ export function Dashboard({ onLogout }: DashboardProps) {
                 </Badge>
                 <span className="text-sm text-muted-foreground">{selectedPlant.species}</span>
               </div>
-              <AutomationControls
-                plantName={selectedPlant.name}
-                //onControl={handleControl}
-              />
+<AutomationControls
+  plantName={selectedPlant.name}
+  onControl={(action) => handleControl(`${selectedPlant.id}:${action}`)}
+/>
             </div>
           )}
         </DialogContent>

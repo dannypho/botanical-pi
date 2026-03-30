@@ -4,6 +4,8 @@ import { Switch } from './ui/switch';
 import { Label } from './ui/label';
 import { Badge } from './ui/badge';
 import { Slider } from './ui/slider';
+import { controlDevice } from "@/api/api";
+import { getLatestReading } from '@/api/api';
 import {
   Droplets,
   Thermometer,
@@ -25,32 +27,65 @@ import {
   Area,
   AreaChart
 } from 'recharts';
+import { useEffect, useState } from 'react';
 
 interface AutomationControlsProps {
   plantName: string;
+   onControl: (action: string) => void; // new prop
 }
 
 export function AutomationControls({ plantName }: AutomationControlsProps) {
-  // Mock sensor data over time
-  const moistureData = [
-    { time: '00:00', value: 45 },
-    { time: '04:00', value: 42 },
-    { time: '08:00', value: 38 },
-    { time: '12:00', value: 35 },
-    { time: '16:00', value: 68 },
-    { time: '20:00', value: 65 },
-    { time: '24:00', value: 62 }
-  ];
+  const [loading, setLoading] = useState(false);
+const [lightOn, setLightOn] = useState(false);
+const [sensorData, setSensorData] = useState<any>(null);
+const [loadingData, setLoadingData] = useState(true);
 
-  const temperatureData = [
-    { time: '00:00', temp: 68, humidity: 55 },
-    { time: '04:00', temp: 66, humidity: 58 },
-    { time: '08:00', temp: 70, humidity: 52 },
-    { time: '12:00', temp: 75, humidity: 48 },
-    { time: '16:00', temp: 77, humidity: 45 },
-    { time: '20:00', temp: 72, humidity: 50 },
-    { time: '24:00', temp: 69, humidity: 54 }
-  ];
+const handleWaterNow = async () => {
+  try {
+    setLoading(true);
+    await controlDevice("pump_on");
+    alert("Watering started 💧");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to water plant");
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleToggleLight = async () => {
+  try {
+    setLoading(true);
+    const action = lightOn ? "light_off" : "light_on";
+    await controlDevice(action);
+    setLightOn(!lightOn);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to toggle light");
+  } finally {
+    setLoading(false);
+  }
+};
+  // Mock sensor data over time
+  useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const data = await getLatestReading();
+      setSensorData(data);
+    } catch (err) {
+      console.error("Failed to fetch sensor data", err);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  fetchData();
+
+  // 🔁 auto-refresh every 5 seconds
+  const interval = setInterval(fetchData, 5000);
+
+  return () => clearInterval(interval);
+}, []);
 
   return (
     <div className="space-y-6">
@@ -64,7 +99,9 @@ export function AutomationControls({ plantName }: AutomationControlsProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">62%</div>
+            <div className="text-2xl font-bold">
+            {loadingData ? "..." : `${sensorData?.moisture} V`}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">Optimal range</p>
             <div className="mt-2 text-xs text-green-600 flex items-center gap-1">
               <Activity className="size-3" />
@@ -81,7 +118,9 @@ export function AutomationControls({ plantName }: AutomationControlsProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">72°F</div>
+            <div className="text-2xl font-bold">
+            {loadingData ? "..." : `${sensorData?.temperature}°F`}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">Comfortable</p>
             <div className="mt-2 text-xs text-muted-foreground flex items-center gap-1">
               <Activity className="size-3" />
@@ -98,7 +137,9 @@ export function AutomationControls({ plantName }: AutomationControlsProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">85%</div>
+            <div className="text-2xl font-bold">
+              {loadingData ? "..." : `${sensorData?.lightExposure} lux`}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">Bright indirect</p>
             <div className="mt-2 text-xs text-muted-foreground flex items-center gap-1">
               <Activity className="size-3" />
@@ -115,7 +156,9 @@ export function AutomationControls({ plantName }: AutomationControlsProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">54%</div>
+            <div className="text-2xl font-bold">
+              {loadingData ? "..." : `${sensorData?.humidity}%`}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">Good level</p>
             <div className="mt-2 text-xs text-muted-foreground flex items-center gap-1">
               <Activity className="size-3" />
@@ -132,7 +175,7 @@ export function AutomationControls({ plantName }: AutomationControlsProps) {
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={200}>
-            <AreaChart data={moistureData}>
+            <AreaChart data={loadingData ? [] : sensorData?.moisture}>
               <defs>
                 <linearGradient id="colorMoisture" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
@@ -166,7 +209,7 @@ export function AutomationControls({ plantName }: AutomationControlsProps) {
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={temperatureData}>
+            <LineChart data={loadingData ? [] : sensorData?.temperature}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
               <XAxis dataKey="time" className="text-xs" />
               <YAxis className="text-xs" />
@@ -246,11 +289,25 @@ export function AutomationControls({ plantName }: AutomationControlsProps) {
           </div>
 
           <div className="pt-4 border-t">
-            <Button className="w-full bg-blue-600 hover:bg-blue-700">
+           <Button
+  className="w-full bg-blue-600 hover:bg-blue-700"
+  onClick={handleWaterNow}
+  disabled={loading}
+>
               <Droplets className="size-4 mr-2" />
               Water Now
             </Button>
           </div>
+          <div className="mt-3">
+  <Button
+    className="w-full bg-yellow-500 hover:bg-yellow-600"
+    onClick={handleToggleLight}
+    disabled={loading}
+  >
+    <Sun className="size-4 mr-2" />
+    {lightOn ? "Turn Light Off" : "Turn Light On"}
+  </Button>
+</div>
         </CardContent>
       </Card>
 
