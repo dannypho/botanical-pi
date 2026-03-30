@@ -8,7 +8,7 @@ from models import db, User, SensorReading, Command
 application = Flask(__name__)
 
 # Configuration
-application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///botanical.db'
+application.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///botanical.db')
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize database with app
@@ -32,11 +32,9 @@ def test_db():
     """Test if database is working"""
     try:
         user_count = User.query.count()
-        device_count = Device.query.count()
         return jsonify({
             "status": "success",
             "users": user_count,
-            "devices": device_count
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -197,7 +195,7 @@ def get_commands(device_id):
         
         # Return the commands
         return jsonify([
-            {'action': cmd.action, 'id': cmd.id} 
+            {'action': cmd.action, 'id': cmd.id, 'created_at': cmd.created_at.isoformat()} 
             for cmd in commands
         ]), 200
         
