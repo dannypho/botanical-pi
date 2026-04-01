@@ -1,4 +1,4 @@
-const BASE_URL = "http://botanical-pi-env.eba-npauivb3.us-east-1.elasticbeanstalk.com/api";
+const BASE_URL = import.meta.env.VITE_API_URL;
 //const BASE_URL = "/api";
 const DEVICE_ID = "plant_001";
 
