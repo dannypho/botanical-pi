@@ -96,7 +96,7 @@ import { login } from "@/api/api";
 - API endpoint is hardcoded for now:
 
 ```ts
-const BASE_URL = "http://botanical-pi-env.eba-npauivb3.us-east-1.elasticbeanstalk.com";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL 
 ```
 
 You can replace it with an `.env` variable if needed.

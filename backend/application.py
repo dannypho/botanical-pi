@@ -1,13 +1,13 @@
 from flask import Flask, jsonify, request
 from werkzeug.security import generate_password_hash, check_password_hash
-import os
 from flask_cors import CORS
+import os
 
 # Import database and models
 from models import db, User, SensorReading, Command
 
 application = Flask(__name__)
-CORS(application)
+CORS(application, origins=["http://localhost:3000"])
 
 # Configuration
 application.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///botanical.db')

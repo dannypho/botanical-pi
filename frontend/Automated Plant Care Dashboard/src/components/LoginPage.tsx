@@ -17,7 +17,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     try {
       setLoading(true);
       const data = await login(email, password);
