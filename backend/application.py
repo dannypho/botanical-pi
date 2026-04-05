@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
 import os
@@ -6,7 +6,7 @@ import os
 # Import database and models
 from models import db, User, SensorReading, Command
 
-application = Flask(__name__)
+application = Flask(__name__,static_folder='static', static_url_path='/static')
 CORS(application, origins=["http://localhost:3000"])
 
 # Configuration
@@ -21,9 +21,13 @@ with application.app_context():
     db.create_all()
 
 # ========== BASIC ROUTES ==========
-@application.route('/')
-def home():
-    return "Botanical Pi Backend API"
+@application.route("/", defaults={"path": ""})
+@application.route("/<path:path>")
+def serve_frontend(path):
+    if path != "" and os.path.exists(os.path.join(application.static_folder, path)):
+        return send_from_directory(application.static_folder, path)
+    else:
+        return send_from_directory(application.static_folder, "index.html")
 
 @application.route('/health')
 def health():
@@ -204,6 +208,6 @@ def get_commands(device_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-
 if __name__ == '__main__':
-    application.run(debug=True, port=5000)
+    #application.run(debug=True, port=5000) local testing
+    application.run() #for production (gunicorn will handle the server)

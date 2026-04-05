@@ -12,3 +12,4 @@ typing_extensions==4.15.0
 Werkzeug==3.1.5
 psycopg2-binary
 flask-cors
+gunicorn
