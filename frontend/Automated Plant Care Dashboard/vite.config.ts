@@ -50,8 +50,7 @@
       },
     },
     build: {
-      target: 'esnext',
-      outDir: '../../backend/static',
+      outDir: path.resolve(__dirname, "../../backend/static"),
       emptyOutDir:true,
     },
     server: {

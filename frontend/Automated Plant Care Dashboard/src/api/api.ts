@@ -1,10 +1,10 @@
 //const BASE_URL = "http://localhost:5000";
 //const BASE_URL = "/api";
-const BASE_URL = "http://botanical-pi-env.eba-npauivb3.us-east-1.elasticbeanstalk.com";
+//const BASE_URL = "";
 const DEVICE_ID = "plant_001";
 
 export async function login(email: string, password: string) {
-  const res = await fetch(`${BASE_URL}/api/auth/login`, {
+  const res = await fetch(`api/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
@@ -14,13 +14,13 @@ export async function login(email: string, password: string) {
 }
 
 export async function getLatestReading() {
-  const res = await fetch(`${BASE_URL}/api/devices/${DEVICE_ID}/latest`);
+  const res = await fetch(`/api/devices/${DEVICE_ID}/latest`);
   if (!res.ok) throw new Error("Failed to fetch sensor data");
   return res.json();
 }
 
 export async function controlDevice(action: string) {
-  const res = await fetch(`${BASE_URL}/api/devices/${DEVICE_ID}/control`, {
+  const res = await fetch(`/api/devices/${DEVICE_ID}/control`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ action }),

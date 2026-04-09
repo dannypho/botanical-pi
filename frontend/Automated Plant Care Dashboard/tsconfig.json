@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0'",
     "target": "ESNext",
     "lib": ["DOM", "ESNext"],
     "jsx": "react-jsx",
@@ -9,6 +10,7 @@
     "paths": {
       "@/*": ["*"]
     },
+    
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true
