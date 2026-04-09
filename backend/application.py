@@ -209,5 +209,5 @@ def get_commands(device_id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 if __name__ == '__main__':
-    application.run(debug=True, port=5000)# local testing
-    #application.run() #for production (gunicorn will handle the server)
+    #application.run(debug=True, port=5000)# local testing
+    application.run() #for production (gunicorn will handle the server)
