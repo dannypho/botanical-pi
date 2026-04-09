@@ -1,6 +1,6 @@
 //const BASE_URL = "http://localhost:5000";
 //const BASE_URL = "/api";
-const BASE_URL = "https://botanical-pi-uxw8.onrender.com";
+const BASE_URL = "http://botanical-pi-env.eba-npauivb3.us-east-1.elasticbeanstalk.com";
 const DEVICE_ID = "plant_001";
 
 export async function login(email: string, password: string) {

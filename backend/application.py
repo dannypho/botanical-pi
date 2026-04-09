@@ -7,7 +7,7 @@ import os
 from models import db, User, SensorReading, Command
 
 application = Flask(__name__,static_folder='static', static_url_path='/static')
-CORS(application, origins=["http://localhost:3000"])
+CORS(application, origins=["http://localhost:5000","http://localhost:3000","https://botanical-pi-uxw8.onrender.com" ])
 
 # Configuration
 application.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///botanical.db')
