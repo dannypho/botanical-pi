@@ -164,7 +164,7 @@ def control_device(device_id):
     """Queue a command for the device"""
     try:
         data = request.get_json()
-        action = data.get('action')  # "pump_on", "pump_off", "light_on", "light_off"
+        action = data.get('action')  # "pump_run", "light_on", "light_off"
         
         # Create command in queue
         command = Command(
