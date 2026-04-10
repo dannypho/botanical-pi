@@ -59,7 +59,7 @@
       proxy: {
       "/api": {
         target:
-          "http://botanical-pi-env.eba-npauivb3.us-east-1.elasticbeanstalk.com",
+          "https://botanical-pi-uxw8.onrender.com",
         changeOrigin: true,
         secure: false,
       },
