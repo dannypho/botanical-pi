@@ -12,7 +12,19 @@ export async function login(email: string, password: string) {
   if (!res.ok) throw new Error("Login failed");
   return res.json(); // { user_id, email }
 }
+export async function signup(email: string, password: string) {
+  const res = await fetch("/api/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
 
+  const data = await res.json();
+
+  if (!res.ok) throw new Error(data.error || "Signup failed");
+
+  return data;
+}
 export async function getLatestReading() {
   const res = await fetch(`/api/devices/${DEVICE_ID}/latest`);
   if (!res.ok) throw new Error("Failed to fetch sensor data");

@@ -1,17 +1,32 @@
 import { useState } from 'react';
 import { LoginPage } from './components/LoginPage';
 import { Dashboard } from './components/Dashboard';
+import { Signup } from './components/SignupPage';
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [page, setPage] = useState<"login" | "signup" | "dashboard">("login");
 
   return (
-    <div className="size-full">
-      {!isLoggedIn ? (
-        <LoginPage onLogin={() => setIsLoggedIn(true)} />
-      ) : (
-        <Dashboard onLogout={() => setIsLoggedIn(false)} />
+    <>
+      {page === "login" && (
+        <LoginPage
+          onLogin={() => setPage("dashboard")}
+          goToSignup={() => setPage("signup")}   // ✅ ADD THIS
+        />
       )}
-    </div>
+
+      {page === "signup" && (
+        <Signup
+          onSignup={() => setPage("dashboard")}
+          goToLogin={() => setPage("login")}     // ✅ ADD THIS
+        />
+      )}
+
+      {page === "dashboard" && (
+        <Dashboard
+          onLogout={() => setPage("login")}
+        />
+      )}
+    </>
   );
 }

@@ -35,7 +35,7 @@ interface AutomationControlsProps {
 }
 
 export function AutomationControls({ plantName }: AutomationControlsProps) {
-  const [loading, setLoading] = useState(false);
+const [loading, setLoading] = useState(false);
 const [lightOn, setLightOn] = useState(false);
 const [sensorData, setSensorData] = useState<any>(null);
 const [loadingData, setLoadingData] = useState(true);
