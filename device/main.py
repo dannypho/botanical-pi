@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 
 # ========== CONFIGURATION ==========
-AWS_BASE_URL = "http://botanical-pi-env.eba-npauivb3.us-east-1.elasticbeanstalk.com"
+API_BASE_URL = "https://botanical-pi-uxw8.onrender.com"
 DEVICE_ID = "plant_001" # Hardcoded device ID
 POLL_INTERVAL = 5  # seconds between each loop
 
@@ -30,10 +30,10 @@ def read_all_sensors():
 
 
 def send_telemetry(sensor_data):
-    """POST sensor data to AWS backend"""
+    """POST sensor data to backend"""
     try:
         response = requests.post(
-            f"{AWS_BASE_URL}/api/devices/telemetry",
+            f"{API_BASE_URL}/api/devices/telemetry",
             json=sensor_data,
             timeout=5
         )
@@ -46,10 +46,10 @@ def send_telemetry(sensor_data):
 
 
 def poll_and_execute_commands():
-    """GET pending commands from AWS and execute them on hardware"""
+    """GET pending commands from database and execute them on hardware"""
     try:
         response = requests.get(
-            f"{AWS_BASE_URL}/api/devices/{DEVICE_ID}/commands",
+            f"{API_BASE_URL}/api/devices/{DEVICE_ID}/commands",
             timeout=5
         )
         if response.status_code != 200:
@@ -75,14 +75,11 @@ def poll_and_execute_commands():
 
             print(f"[Commands] Executing: {action}")
 
-            if action == "pump_on":
+            if action == "pump_run":
                 relay.pump_on()
                 time.sleep(5)   # Run pump for 5 seconds
                 relay.pump_off()
                 print("[Commands] Pump ran for 5 seconds, now OFF")
-
-            elif action == "pump_off":
-                relay.pump_off()
 
             elif action == "light_on":
                 relay.light_on()
@@ -100,7 +97,7 @@ def poll_and_execute_commands():
 def main():
     print(f"Botanical Pi starting up...")
     print(f"Device ID: {DEVICE_ID}")
-    print(f"AWS Backend: {AWS_BASE_URL}")
+    print(f"Render Backend: {API_BASE_URL}")
     print(f"Polling every {POLL_INTERVAL} seconds\n")
 
     try:
@@ -120,7 +117,7 @@ def main():
                   f"Light: {sensor_data['light']['lux']} lux | "
                   f"Water Detected: {sensor_data['water']['water_detected']}")
                 
-            # 2. Send data to AWS
+            # 2. Send data to backend
             send_telemetry(sensor_data)
 
             # 3. Check for and execute any pending commands
