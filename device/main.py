@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 
 # ========== CONFIGURATION ==========
-AWS_BASE_URL = "https://botanical-pi-uxw8.onrender.com"
+AWS_BASE_URL = "http://botanical-pi-env.eba-npauivb3.us-east-1.elasticbeanstalk.com"
 DEVICE_ID = "plant_001" # Hardcoded device ID
 POLL_INTERVAL = 5  # seconds between each loop
 
