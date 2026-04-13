@@ -26,7 +26,19 @@ interface DashboardProps {
 export function Dashboard({ onLogout }: DashboardProps) {
   const [plants, setPlants] = useState<Plant[]>([]);
   const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
+const now = new Date();
 
+const lastWatered = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+const nextWatering = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
+
+const formatDate = (date: Date) =>
+  date.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
   // Mock plants
   const mockPlants: Plant[] = [
     {
@@ -83,9 +95,9 @@ export function Dashboard({ onLogout }: DashboardProps) {
         moistureLevel: data.moisture,
         temperature: data.temperature,
         lightLevel: data.light,
-        lastWatered: "unknown",
+        lastWatered: formatDate(lastWatered),
         status: data.water_detected ? "healthy" : "needs-attention",
-        nextWatering: "unknown",
+        nextWatering: formatDate(nextWatering),
        // timestamp: data.timestamp,
       };
       setPlants([livePlant, ...mockPlants]);
