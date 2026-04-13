@@ -43,7 +43,7 @@ const [loadingData, setLoadingData] = useState(true);
 const handleWaterNow = async () => {
   try {
     setLoading(true);
-    await controlDevice("pump_on");
+    await controlDevice("pump_run");
     alert("Watering started 💧");
   } catch (err) {
     console.error(err);
