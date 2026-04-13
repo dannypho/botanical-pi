@@ -105,6 +105,9 @@ def main():
             # 1. Read all sensors
             sensor_data = read_all_sensors()
 
+            # 2. Check for and execute any pending commands
+            poll_and_execute_commands()
+
             # Skip this cycle if any sensor failed to read
             if sensor_data['environment'] is None:
                 print("[Sensors] DHT read failed, skipping cycle...")
@@ -117,11 +120,8 @@ def main():
                   f"Light: {sensor_data['light']['lux']} lux | "
                   f"Water Detected: {sensor_data['water']['water_detected']}")
                 
-            # 2. Send data to backend
+            # 3. Send data to backend
             send_telemetry(sensor_data)
-
-            # 3. Check for and execute any pending commands
-            poll_and_execute_commands()
 
             # 4. Wait before next cycle
             time.sleep(POLL_INTERVAL)
