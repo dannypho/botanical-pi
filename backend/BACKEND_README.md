@@ -1,14 +1,14 @@
 # Backend — Botanical Pi API
-
-Flask REST API deployed on AWS Elastic Beanstalk. Handles user authentication, sensor data storage, and device command queuing.
+Flask REST API deployed on Render. Handles user authentication, sensor data storage, and device command queuing.
 
 ---
 
 ## Tech Stack
 - Python 3.11
 - Flask
-- Flask-SQLAlchemy (SQLite)
-- AWS Elastic Beanstalk
+- Flask-SQLAlchemy
+- SQLite (non-persistent)
+- Render
 
 ---
 
@@ -27,21 +27,12 @@ Server runs at `http://localhost:5000`
 
 ---
 
-## AWS Deployment
-
-### Check status
-```bash
-eb status
-```
-
-### Deploy updates
-```bash
-eb deploy
-```
+## Deployment
+Deployed on Render. Pushes to main branch auto-redeploy via Render's GitHub integration.
 
 ### Live URL
 ```
-http://botanical-pi-env.eba-npauivb3.us-east-1.elasticbeanstalk.com
+https://botanical-pi-uxw8.onrender.com
 ```
 
 ---
@@ -137,9 +128,11 @@ POST /api/devices/<device_id>/control
 ```
 Body:
 ```json
-{ "action": "pump_on" }
+{ "action": "pump_run" }
 ```
-Available actions: `pump_on`, `pump_off`, `light_on`, `light_off`
+Available actions: `pump_run`, `light_on`, `light_off`
+
+Note: `pump_run` triggers the pump for 5 seconds and automatically shuts it off. There is no separate `pump_off` command.
 
 Response:
 ```json
@@ -152,7 +145,7 @@ GET /api/devices/<device_id>/commands
 ```
 Response:
 ```json
-[{ "action": "pump_on", "id": 1 }]
+[{ "action": "pump_run", "id": 1 }]
 ```
 Note: Commands are marked as executed once fetched.
 
