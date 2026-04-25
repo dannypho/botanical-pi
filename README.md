@@ -31,7 +31,7 @@ Developed as part of the **UTA Senior Design course (CSE 4316 & 4317)**.
                     ↕ Internet/WiFi
 ┌─────────────────────────────────────────┐
 │      RASPBERRY PI (at plant location)   │
-│  - Reads sensors every 1 second        │
+│  - Reads sensors every 1 second         │
 │  - Controls pump and grow light         │
 │  - Sends data to cloud                  │
 │  - Polls cloud for commands             │
@@ -85,7 +85,7 @@ See each folder's `README.md` for setup and running instructions.
 
 ---
 
-## Live Backend
+## Live URL
 ```
 https://botanical-pi-uxw8.onrender.com/
 ```

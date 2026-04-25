@@ -1,6 +1,6 @@
 # Device — Botanical Pi (Raspberry Pi)
 
-Python scripts that run on the Raspberry Pi. Reads sensors every 5 seconds, sends data to the AWS backend, and polls for commands to control the pump and grow light.
+Python scripts that run on the Raspberry Pi. Reads sensors every 1 second, sends data to the Render backend, and polls for commands to control the pump and grow light.
 
 ---
 
@@ -39,26 +39,27 @@ pip install -r requirements.txt
 python main.py
 ```
 
-The script will start reading sensors and syncing with AWS every 5 seconds. Press `Ctrl+C` to stop cleanly.
+The script will start reading sensors and syncing with Render every 1 second. Press `Ctrl+C` to stop cleanly.
 
 ---
 
 ## How It Works
 
-Every 5 seconds the Pi:
+Every 1 second the Pi:
 1. Reads all sensors (temperature, humidity, moisture, light, water level)
 2. POSTs sensor data to `POST /api/devices/telemetry`
 3. GETs pending commands from `GET /api/devices/<device_id>/commands`
-4. Executes any commands (pump on/off, light on/off)
+4. Checks command age — discards any commands older than 30 seconds
+5. Executes valid commands (`pump_run`, `light_on`, `light_off`)
 
-When a `pump_on` command is received, the pump runs for 5 seconds then automatically turns off.
+When a `pump_run` command is received, the pump runs for 5 seconds then automatically turns off. There is no separate `pump_off` command.
 
 ---
 
 ## File Structure
 ```
 device/
-├── main.py           # Main loop — reads sensors, syncs with AWS
+├── main.py           # Main loop — reads sensors, syncs with Render
 ├── sensors.py        # Sensor classes (DHT22, ADS1115, BH1750, WaterLevel)
 ├── actuators.py      # Relay controller (pump and light)
 ├── requirements.txt  # Python dependencies
