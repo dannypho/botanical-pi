@@ -35,7 +35,7 @@ interface AutomationControlsProps {
 }
 
 export function AutomationControls({ plantName }: AutomationControlsProps) {
-  const [loading, setLoading] = useState(false);
+const [loading, setLoading] = useState(false);
 const [lightOn, setLightOn] = useState(false);
 const [sensorData, setSensorData] = useState<any>(null);
 const [loadingData, setLoadingData] = useState(true);
@@ -43,7 +43,7 @@ const [loadingData, setLoadingData] = useState(true);
 const handleWaterNow = async () => {
   try {
     setLoading(true);
-    await controlDevice("pump_on");
+    await controlDevice("pump_run");
     alert("Watering started 💧");
   } catch (err) {
     console.error(err);
@@ -52,6 +52,19 @@ const handleWaterNow = async () => {
     setLoading(false);
   }
 };
+const now = new Date();
+
+const lastWatered = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+const nextWatering = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
+
+const formatDate = (date: Date) =>
+  date.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
 
 const handleToggleLight = async () => {
   try {
@@ -86,7 +99,9 @@ const handleToggleLight = async () => {
 
   return () => clearInterval(interval);
 }, []);
-
+const tempF = sensorData?.temperature
+  ? (sensorData.temperature * 9) / 5 + 32
+  : null;
   return (
     <div className="space-y-6">
       {/* Real-time Sensor Readings */}
@@ -119,7 +134,8 @@ const handleToggleLight = async () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-            {loadingData ? "..." : `${sensorData?.temperature}°F`}
+              
+            {loadingData ? "..." : `${tempF?.toFixed(1)}°F`}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Comfortable</p>
             <div className="mt-2 text-xs text-muted-foreground flex items-center gap-1">
@@ -138,7 +154,7 @@ const handleToggleLight = async () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {loadingData ? "..." : `${sensorData?.lightExposure} lux`}
+              {loadingData ? "..." : `${sensorData?.light ?? 0} lux`}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Bright indirect</p>
             <div className="mt-2 text-xs text-muted-foreground flex items-center gap-1">
@@ -320,27 +336,15 @@ const handleToggleLight = async () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div>
-                <p className="font-medium">Last Watered</p>
-                <p className="text-sm text-muted-foreground">Feb 7, 2026 at 4:00 PM</p>
-              </div>
-              <Badge variant="secondary">2 days ago</Badge>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
-              <div>
-                <p className="font-medium">Next Scheduled Watering</p>
-                <p className="text-sm text-muted-foreground">Feb 11, 2026 at 8:00 AM</p>
-              </div>
-              <Badge className="bg-green-600">In 2 days</Badge>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div>
-                <p className="font-medium">Average Frequency</p>
-                <p className="text-sm text-muted-foreground">Based on last 30 days</p>
-              </div>
-              <Badge variant="secondary">Every 4 days</Badge>
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <Label>Last Watered</Label>
+          <p className="text-sm text-muted-foreground">
+  {formatDate(lastWatered)}
+</p>
+<p className="text-sm text-muted-foreground">
+  {formatDate(nextWatering)}
+</p>
             </div>
           </div>
         </CardContent>

@@ -10,7 +10,7 @@ Developed as part of the **UTA Senior Design course (CSE 4316 & 4317)**.
 - **Real-time Sensor Monitoring** — soil moisture, water level, ambient light, temperature & humidity
 - **Remote Control** — trigger pump and grow light from anywhere via web dashboard
 - **Data Logging** — sensor readings stored in a cloud database
-- **Multi-user Support** — each user manages their own device via account login
+- **User Authentication** — secure login to access the dashboard
 
 ---
 
@@ -23,7 +23,7 @@ Developed as part of the **UTA Senior Design course (CSE 4316 & 4317)**.
 └─────────────────────────────────────────┘
                     ↕ Internet
 ┌─────────────────────────────────────────┐
-│         CLOUD BACKEND (AWS)             │
+│         CLOUD BACKEND (Render)          │
 │  - Stores user accounts                 │
 │  - Stores sensor data history           │
 │  - Manages device commands              │
@@ -31,7 +31,7 @@ Developed as part of the **UTA Senior Design course (CSE 4316 & 4317)**.
                     ↕ Internet/WiFi
 ┌─────────────────────────────────────────┐
 │      RASPBERRY PI (at plant location)   │
-│  - Reads sensors every 5 seconds        │
+│  - Reads sensors every 1 second        │
 │  - Controls pump and grow light         │
 │  - Sends data to cloud                  │
 │  - Polls cloud for commands             │
@@ -54,8 +54,8 @@ Developed as part of the **UTA Senior Design course (CSE 4316 & 4317)**.
 - **Raspberry Pi 4** (Raspbian OS)
 - **Python 3**
 - **Flask** (cloud REST API)
-- **SQLite** (cloud database via SQLAlchemy)
-- **AWS Elastic Beanstalk** (cloud deployment)
+- **SQLite** (database, non-persistent)
+- **Render** (cloud deployment — backend and frontend)
 - **React** (web dashboard)
 
 ---
@@ -64,7 +64,7 @@ Developed as part of the **UTA Senior Design course (CSE 4316 & 4317)**.
 
 ```
 botanical-pi/
-├── backend/     # Flask REST API deployed on AWS Elastic Beanstalk
+├── backend/     # Flask REST API deployed on Render
 ├── device/      # Raspberry Pi scripts for sensors and actuators
 ├── frontend/    # React web dashboard
 └── README.md
@@ -87,5 +87,5 @@ See each folder's `README.md` for setup and running instructions.
 
 ## Live Backend
 ```
-http://botanical-pi-env.eba-npauivb3.us-east-1.elasticbeanstalk.com
+https://botanical-pi-uxw8.onrender.com/
 ```

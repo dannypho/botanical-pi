@@ -4,37 +4,45 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Leaf, Droplets } from "lucide-react";
-import { login } from "@/api/api";
+import { signup } from "@/api/api";
 
-interface LoginPageProps {
-  onLogin: () => void; // no token needed
-  goToSignup: () => void;
+interface SignupPageProps {
+  onSignup: () => void;
+  goToLogin: () => void;
 }
 
-export function LoginPage({ onLogin,goToSignup }: LoginPageProps) {
+export function Signup({ onSignup, goToLogin }: SignupPageProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setError("");
+
+    // ✅ Basic validation
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     try {
       setLoading(true);
-      const data = await login(email, password);
 
-      console.log("Login response:", data);
+      const data = await signup(email, password);
+      console.log("Signup response:", data);
 
-      // Check backend response
       if (!data.user_id) {
-        throw new Error("Invalid credentials");
+        throw new Error("Signup failed");
       }
 
-      // Successful login
-      onLogin();
-    } catch (err) {
-      console.error("Login failed:", err);
-      alert("Login failed. Check your credentials.");
+      // ✅ Success
+      onSignup();
+    } catch (err: any) {
+      console.error("Signup failed:", err);
+      setError(err.message || "Signup failed");
     } finally {
       setLoading(false);
     }
@@ -50,18 +58,18 @@ export function LoginPage({ onLogin,goToSignup }: LoginPageProps) {
               <Droplets className="size-5 text-blue-500 absolute -bottom-1 -right-1" />
             </div>
           </div>
-          <CardTitle className="text-3xl">Botanical Pi</CardTitle>
+          <CardTitle className="text-3xl">Create Account</CardTitle>
           <CardDescription className="text-base">
-            Automated plant monitoring and care system
+            Start monitoring your plants 🌱
           </CardDescription>
         </CardHeader>
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label>Email</Label>
               <Input
-                id="email"
                 type="email"
                 placeholder="test@botanical.com"
                 value={email}
@@ -70,41 +78,56 @@ export function LoginPage({ onLogin,goToSignup }: LoginPageProps) {
               />
             </div>
 
+            {/* Password */}
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label>Password</Label>
               <Input
-                id="password"
                 type="password"
-                placeholder="test123"
+                placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
 
+            {/* Confirm Password */}
+            <div className="space-y-2">
+              <Label>Confirm Password</Label>
+              <Input
+                type="password"
+                placeholder="Confirm password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            {/* Error */}
+            {error && (
+              <p className="text-sm text-red-500 text-center">{error}</p>
+            )}
+
+            {/* Submit */}
             <Button
               type="submit"
               disabled={loading}
               className="w-full bg-green-600 hover:bg-green-700"
             >
-              {loading ? "Signing In..." : "Sign In"}
+              {loading ? "Creating account..." : "Sign Up"}
             </Button>
-          </form><div className="mt-4 text-center text-sm">
-              <span>Don't have an account? </span>
-              <button
-                  type="button"
-                  onClick={goToSignup}
-                  className="text-green-600 hover:underline"
-              >
-                  Sign up
-              </button>
-              </div>
-          
+          </form>
 
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>Demo credentials:</p>
-            <p>Email: test@botanical.com</p>
-            <p>Password: test123</p>
+          {/* Switch to Login */}
+          <div className="mt-6 text-center text-sm">
+            <p>
+              Already have an account?{" "}
+              <button
+                onClick={goToLogin}
+                className="text-green-600 hover:underline"
+              >
+                Login
+              </button>
+            </p>
           </div>
         </CardContent>
       </Card>
